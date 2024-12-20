@@ -40,6 +40,12 @@ export default [
     hideInMenu: true,
     component: './Scene',
   },
+  {
+    path: '/template',
+    name: 'template',
+    icon: 'CopyOutlined',
+    component: './Template',
+  },
   /*
   {
     path: '/admin',

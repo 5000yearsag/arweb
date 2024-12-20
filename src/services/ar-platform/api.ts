@@ -197,3 +197,46 @@ export async function uploadFile(
     ...(opts || {}),
   });
 }
+export async function getTemplateList(
+  body: AR_API.PagedListParams,
+): Promise<AR_API.PagedListResult<AR_API.TemplateListItem>> {
+  return request<AR_API.PagedListResult<AR_API.TemplateListItem>>(
+    '/api/template/list',
+    {
+      method: 'POST',
+      data: body,
+    },
+  );
+}
+
+export async function getTemplateById(
+  id: string,
+): Promise<AR_API.TemplateListItem> {
+  return request<AR_API.TemplateListItem>(`/api/template/id?id=${id}`, {
+    method: 'GET',
+  });
+}
+
+export async function addTemplate(body: AR_API.AddTemplateBody) {
+  return request('/api/template/add', {
+    method: 'post',
+    data: body,
+  });
+}
+
+export async function editTemplate(body: { id: string } & AR_API.AddTemplateBody) {
+  return request('/api/template/update', {
+    method: 'post',
+    data: body,
+  });
+}
+
+export async function deleteTemplate(id: string) {
+  return request(`/api/template/del?id=${id}`, {
+    method: 'GET',
+  });
+}
+
+export async function getAllTemplateList(): Promise<AR_API.PagedListResult<AR_API.TemplateListItem>> {
+  return request<AR_API.PagedListResult<AR_API.TemplateListItem>>('/api/template/list/all');
+}

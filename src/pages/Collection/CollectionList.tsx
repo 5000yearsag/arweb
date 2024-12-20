@@ -49,7 +49,7 @@ const CollectionList: React.FC = () => {
         columns={[
           {
             dataIndex: 'coverImgUrl',
-            title: '封面图',
+            title: '合集logo',
             renderText(val) {
               return <Image src={val} height={80} />;
             },
@@ -86,6 +86,10 @@ const CollectionList: React.FC = () => {
           {
             dataIndex: 'sceneCount',
             title: '场景数量',
+          },
+          {
+            dataIndex: 'templateName',
+            title: '模板名称',
           },
           {
             dataIndex: 'collectionUuid',

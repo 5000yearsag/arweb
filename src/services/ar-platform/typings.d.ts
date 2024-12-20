@@ -49,6 +49,7 @@ declare namespace AR_API {
     coverImgUrl: string;
     description: string;
     collectionAppList: AppListItem[];
+    templateId: string;
   };
 
   type AppListItem = {
@@ -84,6 +85,7 @@ declare namespace AR_API {
       appId: string;
       wxJumpParam: string;
     }[];
+    templateId: string;
   };
 
   type AddAppBody = {
@@ -113,5 +115,20 @@ declare namespace AR_API {
     spaceParam: string;
     arResourceFileName?: string;
     videoEffect?: string;
+  };
+
+  type TemplateListItem = {
+    id: string;
+    templateName: string;
+    brandName: string;
+    shareImgUrl: string;
+    bgImgUrl: string;
+  };
+
+  type AddTemplateBody = {
+    templateName: string;
+    brandName: string;
+    shareImgUrl: string;
+    bgImgUrl: string;
   };
 }

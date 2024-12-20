@@ -1,6 +1,7 @@
 export default {
   'menu.welcome': '欢迎',
   'menu.collection': '合集管理',
+  'menu.template': '模板管理',
   'menu.scene': '场景管理',
   'menu.more-blocks': '更多区块',
   'menu.home': '首页',

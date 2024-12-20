@@ -16,6 +16,7 @@ import {
   getCollectionByUuid,
   addCollection,
   editCollection,
+  getAllTemplateList
 } from '@/services/ar-platform/api';
 
 const useAppList = () => {
@@ -38,6 +39,26 @@ const useAppList = () => {
   };
 };
 
+const useTemplateList = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [templateList, setTemplateList] = useState<any[]>([]);
+
+  const loadAllTemplateList = useCallback(() => {
+    (async () => {
+      setLoading(true);
+      const res = await getAllTemplateList().finally(() => setLoading(false));
+      const newList = Array.isArray(res) ? res : [];
+      setTemplateList(newList);
+    })();
+  }, []);
+
+  return {
+    loading,
+    list: templateList,
+    loadAllTemplateList,
+  };
+};
+
 type CollectionFormValues = {
   collectionName: string;
   description: string;
@@ -49,6 +70,7 @@ type CollectionFormValues = {
     },
   ];
   wxAppIdList: string[];
+  templateId: string;
 };
 const useCollectionDetail = () => {
   const [loading, setLoading] = useState<boolean>(true);
@@ -74,6 +96,7 @@ const useCollectionDetail = () => {
               wxJumpParamsRef.current[appId] = item.wxJumpParam;
               return item.appId;
             }),
+            templateId: res.templateId || ""
           };
           setDetail(_detail);
         } else {
@@ -109,6 +132,7 @@ const AddOrEditCollectionModal: React.FC<
   }, [collectionUuid]);
 
   const { loading: loadingAppList, list: appList, loadAllAppList } = useAppList();
+  const { loading: loadingTemplateList, list: templateList, loadAllTemplateList } = useTemplateList();
   const {
     loading: loadingCollectionDetail,
     detail: collectionDetail,
@@ -133,12 +157,14 @@ const AddOrEditCollectionModal: React.FC<
       onOpenChange={(open) => {
         if (open) {
           loadAllAppList();
+          loadAllTemplateList()
           loadCollectionDetail(collectionUuid);
         }
       }}
       onFinish={async (values) => {
         const collectionName = values.collectionName || '';
         const description = values.description || '';
+        const templateId = values.templateId || '';
         const coverImgUrl = values.coverImg?.[0]?.response?.url || values.coverImg?.[0]?.url || '';
         const wxAppInfoList = (values.wxAppIdList || []).map((appId: string) => {
           const wxJumpParam = wxJumpParamsRef.current[appId];
@@ -154,6 +180,7 @@ const AddOrEditCollectionModal: React.FC<
             description,
             coverImgUrl,
             wxAppInfoList,
+            templateId
           });
           message.success('编辑合集成功');
         } else {
@@ -162,6 +189,7 @@ const AddOrEditCollectionModal: React.FC<
             description,
             coverImgUrl,
             wxAppInfoList,
+            templateId
           });
           message.success('新建合集成功');
         }
@@ -187,8 +215,8 @@ const AddOrEditCollectionModal: React.FC<
       />
       <ProFormUploadButton
         name="coverImg"
-        label="封面图"
-        placeholder="请上传合集封面图"
+        label="合集logo"
+        placeholder="请上传合集logo"
         max={1}
         required
         fieldProps={{
@@ -210,23 +238,8 @@ const AddOrEditCollectionModal: React.FC<
                   return Promise.reject('上传文件失败，请重试！');
                 return Promise.resolve();
               }
-              return Promise.reject('请上传合集封面图');
+              return Promise.reject('请上传合集logo');
             },
-          },
-        ]}
-      />
-      <ProFormTextArea
-        name="description"
-        label="合集描述"
-        fieldProps={{ showCount: true, maxLength: 140 }}
-        rules={[
-          {
-            required: true,
-            message: '请输入合集描述',
-          },
-          {
-            max: 20,
-            message: '合集描述长度不超过140',
           },
         ]}
       />
@@ -246,6 +259,34 @@ const AddOrEditCollectionModal: React.FC<
               if (Array.isArray(value) && value.length > 0) return Promise.resolve();
               return Promise.reject('请选择关联小程序');
             },
+          },
+        ]}
+      />
+      <ProFormSelect
+        name="templateId"
+        label="合集模板"
+        placeholder="请选择关联合集模板"
+        options={templateList.map((item) => ({ value: item.id, label: item.templateName }))}
+        required
+        rules={[
+          {
+            required: true,
+            message: '请选择关联合集模板',
+          },
+        ]}
+      />
+      <ProFormTextArea
+        name="description"
+        label="合集描述"
+        fieldProps={{ showCount: true, maxLength: 140 }}
+        rules={[
+          {
+            required: false,
+            message: '请输入合集描述',
+          },
+          {
+            max: 20,
+            message: '合集描述长度不超过140',
           },
         ]}
       />

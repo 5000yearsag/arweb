@@ -23,7 +23,7 @@ const CollectionList: React.FC = () => {
       <ProTable<AR_API.CollectionListItem>
         rowKey="id"
         actionRef={actionRef}
-        search={false}
+        search={true}
         request={async (params) => {
           const { current = 1, pageSize = 10, ...rest } = params;
           const res = await getCollectionList({
@@ -50,6 +50,7 @@ const CollectionList: React.FC = () => {
           {
             dataIndex: 'coverImgUrl',
             title: '合集logo',
+            search: false,
             renderText(val) {
               return <Image src={val} height={80} />;
             },
@@ -61,6 +62,7 @@ const CollectionList: React.FC = () => {
           {
             dataIndex: 'appListNames',
             title: '小程序信息',
+            search: false,
             renderText(val, record) {
               return !!val ? (
                 <div>
@@ -86,6 +88,7 @@ const CollectionList: React.FC = () => {
           {
             dataIndex: 'sceneCount',
             title: '场景数量',
+            search: false,
           },
           {
             dataIndex: 'templateName',
@@ -95,6 +98,7 @@ const CollectionList: React.FC = () => {
             dataIndex: 'collectionUuid',
             title: '操作',
             width: 260,
+            search: false,
             renderText(val, record) {
               return (
                 <div>

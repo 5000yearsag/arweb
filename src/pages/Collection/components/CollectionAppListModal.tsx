@@ -48,6 +48,7 @@ const CollectionAppListModal: React.FC<
           {
             dataIndex: 'wxImgUrl',
             title: '小程序码',
+            width: 100,
             renderText(val) {
               return (
                 <div

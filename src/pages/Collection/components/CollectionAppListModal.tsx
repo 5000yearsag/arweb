@@ -68,6 +68,11 @@ const CollectionAppListModal: React.FC<
             title: '跳转参数',
             copyable: true,
           },
+          {
+            dataIndex: 'wxNfcUrl',
+            title: 'NfcUrl',
+            copyable: true,
+          },
         ]}
       />
     </Modal>

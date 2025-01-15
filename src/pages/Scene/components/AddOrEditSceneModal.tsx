@@ -5,6 +5,9 @@ import {
   ProFormSwitch,
   ProFormText,
   ProFormUploadButton,
+  ProFormList,
+  ProFormGroup,
+  ProCard
 } from '@ant-design/pro-components';
 import { InputNumber, Space, message } from 'antd';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -53,7 +56,46 @@ type SceneFormValues = {
   audioResourceFileName?: string;
   spaceParamObj?: SpaceParamObj;
   tsbs?: boolean;
+  
+  extraJson: [
+    {
+      arResource: [
+        {
+          url: string;
+          response?: AR_API.UploadFileResponse;
+          [key: string]: any;
+        },
+      ];
+      arResourceDimension: string;
+      arResourceFileName?: string;
+      arAudio: [
+        {
+          url: string;
+          response?: AR_API.UploadFileResponse;
+          [key: string]: any;
+        },
+      ];
+      audioResourceFileName?: string;
+      spaceParamObj?: SpaceParamObj;
+      tsbs?: boolean;
+      showMp3?: boolean;
+    }
+  ];
 };
+
+const defaultData = {
+  arResource: [],
+  arResourceDimension: '',
+  arResourceFileName:'',
+  arAudio: [],
+  audioResourceFileName: '',
+  spaceParamObj: {
+    position: { x: 0, y: 0, z: 0 },
+    rotation: { x: 0, y: 0, z: 0 },
+    scale: { x: 1, y: 1, z: 1 },
+  },
+  tsbs: false
+}
 
 const useSceneDetail = () => {
   const [loading, setLoading] = useState<boolean>(true);
@@ -65,6 +107,25 @@ const useSceneDetail = () => {
         const res = await getSceneByUuid(sceneUuid).finally(() => setLoading(false));
         if (res) {
           const spaceParamObj: SpaceParamObj = parseSpaceParamStr(res.spaceParam);
+          const extraJsonOld = res.extraJson ? JSON.parse(res.extraJson) : void 0;
+          const extraJsonNew = extraJsonOld ? extraJsonOld.map((item) => ({
+            arResource: [
+              {
+                url: item.arResourceUrl,
+                name: item.arResourceFileName,
+              },
+            ],
+            arResourceDimension: item.arResourceDimension || '',
+            arAudio: item.audioResourceUrl
+              ? [{
+                  url: item.audioResourceUrl,
+                  name: item.audioResourceFileName,
+                }]
+              : [],
+            spaceParamObj: parseSpaceParamStr(item.spaceParam),
+            tsbs: item.videoEffect === 'tsbs',
+          })) : void 0;
+
           setDetail({
             id: res.id,
             sceneUuid: res.sceneUuid,
@@ -92,6 +153,7 @@ const useSceneDetail = () => {
                 ],
             spaceParamObj,
             tsbs: res?.videoEffect === 'tsbs',
+            extraJson: extraJsonNew ? extraJsonNew : void 0,
           });
         } else {
           setDetail(void 0);
@@ -233,7 +295,7 @@ const AddOrEditSceneModal: React.FC<
   return (
     <ModalForm
       title={renderData.title}
-      width={520}
+      width={800}
       layout="horizontal"
       labelCol={{ span: 5 }}
       wrapperCol={{ span: 18 }}
@@ -267,6 +329,21 @@ const AddOrEditSceneModal: React.FC<
 
         const videoEffect = values.tsbs ? 'tsbs' : void 0;
 
+        const extraJsonNew = (values.extraJson || []).map((item) => {
+          return {
+            arResourceUrl: item.arResource?.[0]?.response?.url || item.arResource?.[0]?.url || '',
+            audioResourceUrl:item.arAudio?.[0]?.response?.url || item.arAudio?.[0]?.url || '',
+            arResourceFileName: item.arResourceFileName,
+            audioResourceFileName: item.audioResourceFileName,
+            arResourceDimension: item.arResource?.[0]?.response?.dimensions || item?.arResourceDimension || '',
+            spaceParam:JSON.stringify(parseSpaceParamStr(
+              item.spaceParamObj ? JSON.stringify(item.spaceParamObj) : void 0
+            )),
+            videoEffect: item.tsbs ? 'tsbs' : void 0
+          };
+        });
+        const extraJson = JSON.stringify(extraJsonNew);
+
         if (renderData.isEdit) {
           await editScene({
             id: id!,
@@ -281,6 +358,7 @@ const AddOrEditSceneModal: React.FC<
             arResourceDimension,
             spaceParam,
             videoEffect,
+            extraJson
           });
           message.success('编辑场景成功');
         } else {
@@ -293,6 +371,7 @@ const AddOrEditSceneModal: React.FC<
             arResourceDimension,
             spaceParam,
             videoEffect,
+            extraJson
           });
           message.success('新建场景成功');
         }
@@ -413,6 +492,91 @@ const AddOrEditSceneModal: React.FC<
       >
         <SpaceParam />
       </ProForm.Item>
+      <ProFormList
+        name="extraJson"
+        label="资源"
+        creatorButtonProps={{
+          creatorButtonText: '添加资源',
+        }}
+        copyIconProps={false}
+        itemRender={({ listDom, action }, { index, record }) => {
+          return (
+            <ProCard
+              bordered
+              style={{ marginBlockEnd: 6 }}
+              title={`资源${index + 2}`}
+              extra={action}
+              bodyStyle={{ paddingBlockEnd: 0 }}
+            >
+              {listDom}
+              <ProFormGroup>
+                <ProFormUploadButton
+                  isListField
+                  name="arResource"
+                  label="AR资源"
+                  placeholder="请上传场景AR资源"
+                  max={1}
+                  required
+                  fieldProps={{
+                    name: 'file',
+                    listType: 'picture-card',
+                    accept: '.avi,.mov,.mp4,.glb',
+                    customRequest: (params) => customUploadRequest('/api/sys/file/uploadSceneFile', params),
+                  }}
+                  extra="支持文件格式：.avi,.mov,.mp4,.glb"
+                  rules={[
+                    {
+                      validator(rule, value) {
+                        if (value && Array.isArray(value) && value.length === 1) {
+                          const [file] = value;
+                          if (file.error) return Promise.reject(file.error.message);
+                          if (file.status === 'uploading') return Promise.reject('正在上传文件...');
+                          if (file.status === 'done' && !file.response)
+                            return Promise.reject('上传文件失败，请重试！');
+                          return Promise.resolve();
+                        }
+                        return Promise.reject('请上传场景AR资源');
+                      },
+                    },
+                  ]}
+                />
+                <ProFormUploadButton
+                  isListField
+                  //hidden={!record.showMp3} // 根据 showMp3 的值动态控制显示
+                  name='arAudio'
+                  label="音频资源"
+                  placeholder="请上传场景音频资源"
+                  max={1}
+                  fieldProps={{
+                    name: 'file',
+                    listType: 'picture-card',
+                    accept: '.mp3',
+                    customRequest: (params) => customUploadRequest('/api/sys/file/uploadSceneFile', params),
+                  }}
+                  extra="支持文件格式：.mp3"
+                />
+              </ProFormGroup>
+              <ProForm.Item name="tsbs" label="透明视频">
+                <ProFormSwitch />
+              </ProForm.Item>
+              <ProForm.Item
+                name="spaceParamObj"
+                label="空间参数"
+                initialValue={{
+                  position: { x: 0, y: 0, z: 0 },
+                  rotation: { x: 0, y: 0, z: 0 },
+                  scale: { x: 1, y: 1, z: 1 },
+                }}
+              >
+                <SpaceParam />
+              </ProForm.Item>
+            </ProCard>
+          );
+        }}
+        creatorRecord={defaultData}
+      >
+        
+      </ProFormList>
     </ModalForm>
   );
 };

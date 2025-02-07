@@ -68,14 +68,6 @@ type SceneFormValues = {
       ];
       arResourceDimension: string;
       arResourceFileName?: string;
-      arAudio: [
-        {
-          url: string;
-          response?: AR_API.UploadFileResponse;
-          [key: string]: any;
-        },
-      ];
-      audioResourceFileName?: string;
       spaceParamObj?: SpaceParamObj;
       tsbs?: boolean;
       showMp3?: boolean;
@@ -87,8 +79,6 @@ const defaultData = {
   arResource: [],
   arResourceDimension: '',
   arResourceFileName:'',
-  arAudio: [],
-  audioResourceFileName: '',
   spaceParamObj: {
     position: { x: 0, y: 0, z: 0 },
     rotation: { x: 0, y: 0, z: 0 },
@@ -116,12 +106,6 @@ const useSceneDetail = () => {
               },
             ],
             arResourceDimension: item.arResourceDimension || '',
-            arAudio: item.audioResourceUrl
-              ? [{
-                  url: item.audioResourceUrl,
-                  name: item.audioResourceFileName,
-                }]
-              : [],
             spaceParamObj: parseSpaceParamStr(item.spaceParam),
             tsbs: item.videoEffect === 'tsbs',
           })) : void 0;
@@ -332,9 +316,7 @@ const AddOrEditSceneModal: React.FC<
         const extraJsonNew = (values.extraJson || []).map((item) => {
           return {
             arResourceUrl: item.arResource?.[0]?.response?.url || item.arResource?.[0]?.url || '',
-            audioResourceUrl:item.arAudio?.[0]?.response?.url || item.arAudio?.[0]?.url || '',
             arResourceFileName: item.arResourceFileName,
-            audioResourceFileName: item.audioResourceFileName,
             arResourceDimension: item.arResource?.[0]?.response?.dimensions || item?.arResourceDimension || '',
             spaceParam:JSON.stringify(parseSpaceParamStr(
               item.spaceParamObj ? JSON.stringify(item.spaceParamObj) : void 0
@@ -539,21 +521,6 @@ const AddOrEditSceneModal: React.FC<
                       },
                     },
                   ]}
-                />
-                <ProFormUploadButton
-                  isListField
-                  //hidden={!record.showMp3} // 根据 showMp3 的值动态控制显示
-                  name='arAudio'
-                  label="音频资源"
-                  placeholder="请上传场景音频资源"
-                  max={1}
-                  fieldProps={{
-                    name: 'file',
-                    listType: 'picture-card',
-                    accept: '.mp3',
-                    customRequest: (params) => customUploadRequest('/api/sys/file/uploadSceneFile', params),
-                  }}
-                  extra="支持文件格式：.mp3"
                 />
               </ProFormGroup>
               <ProForm.Item name="tsbs" label="透明视频">

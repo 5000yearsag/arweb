@@ -89,15 +89,46 @@ const CollectionList: React.FC = () => {
             dataIndex: 'sceneCount',
             title: '场景数量',
             search: false,
+            width: 88,
           },
           {
             dataIndex: 'templateName',
             title: '模板名称',
           },
           {
+            dataIndex: 'pvCount',
+            title: '打开',
+            width: 44,
+          },
+          {
+            dataIndex: 'click1Count',
+            title: '进入',
+            width: 44,
+          },
+          {
+            dataIndex: 'click2Count',
+            title: '播放',
+            width: 44,
+          },
+          {
+            dataIndex: 'click3Count',
+            title: '拍照分享',
+            width: 88,
+          },
+          {
+            dataIndex: 'click4Count',
+            title: '录像分享',
+            width: 88,
+          },
+          {
+            dataIndex: 'click5Count',
+            title: '资源加载',
+            width: 88,
+          },
+          {
             dataIndex: 'collectionUuid',
             title: '操作',
-            width: 260,
+            // width: 260,
             search: false,
             renderText(val, record) {
               return (

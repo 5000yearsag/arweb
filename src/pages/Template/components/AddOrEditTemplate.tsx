@@ -212,11 +212,11 @@ const AddOrEditTemplateModal: React.FC<
         fieldProps={{
           name: 'file',
           listType: 'picture-card',
-          accept: '.jpg,.jpeg,.png',
+          accept: '.jpg,.jpeg,.png,.gif',
           customRequest: (params) =>
             customUploadRequest('/api/sys/file/uploadTemplateFile', params),
         }}
-        extra="支持文件格式：.jpg,.jpeg,.png"
+        extra="支持文件格式：.jpg,.jpeg,.png,.gif"
         rules={[
           {
             validator(rule, value) {

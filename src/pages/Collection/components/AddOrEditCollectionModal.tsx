@@ -71,6 +71,7 @@ type CollectionFormValues = {
   ];
   wxAppIdList: string[];
   templateId: string;
+  collectionType: number;
 };
 const useCollectionDetail = () => {
   const [loading, setLoading] = useState<boolean>(true);
@@ -96,7 +97,8 @@ const useCollectionDetail = () => {
               wxJumpParamsRef.current[appId] = item.wxJumpParam;
               return item.appId;
             }),
-            templateId: res.templateId || ""
+            templateId: res.templateId || "",
+            collectionType: res.collectionType
           };
           setDetail(_detail);
         } else {
@@ -165,6 +167,7 @@ const AddOrEditCollectionModal: React.FC<
         const collectionName = values.collectionName || '';
         const description = values.description || '';
         const templateId = values.templateId || '';
+        const collectionType = values.collectionType || 0;
         const coverImgUrl = values.coverImg?.[0]?.response?.url || values.coverImg?.[0]?.url || '';
         const wxAppInfoList = (values.wxAppIdList || []).map((appId: string) => {
           const wxJumpParam = wxJumpParamsRef.current[appId];
@@ -180,7 +183,8 @@ const AddOrEditCollectionModal: React.FC<
             description,
             coverImgUrl,
             wxAppInfoList,
-            templateId
+            templateId,
+            collectionType
           });
           message.success('编辑合集成功');
         } else {
@@ -189,7 +193,8 @@ const AddOrEditCollectionModal: React.FC<
             description,
             coverImgUrl,
             wxAppInfoList,
-            templateId
+            templateId,
+            collectionType
           });
           message.success('新建合集成功');
         }
@@ -259,6 +264,27 @@ const AddOrEditCollectionModal: React.FC<
               if (Array.isArray(value) && value.length > 0) return Promise.resolve();
               return Promise.reject('请选择关联小程序');
             },
+          },
+        ]}
+      />
+      <ProFormSelect
+        name="collectionType"
+        label="合集类型"
+        placeholder="请选择合集类型"
+        options={[
+        {
+          value: 0,
+          label: '图像识别',
+        },
+        {
+          value: 1,
+          label: '平面识别',
+        }]}
+        required
+        rules={[
+          {
+            required: true,
+            message: '请选择合集类型',
           },
         ]}
       />

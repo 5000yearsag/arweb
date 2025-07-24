@@ -62,6 +62,7 @@ const CollectionList: React.FC = () => {
           {
             dataIndex: 'appListNames',
             title: '小程序信息',
+            width: 120,
             search: false,
             renderText(val, record) {
               return !!val ? (
@@ -86,6 +87,24 @@ const CollectionList: React.FC = () => {
             },
           },
           {
+            dataIndex: 'collectionType',
+            title: '合集类型',
+            valueType: 'select',
+            width: 80,
+            fieldProps: {
+              options: [
+                {
+                  label: '图像识别',
+                  value: 0,
+                },
+                {
+                  label: '平面识别',
+                  value: 1,
+                },
+              ],
+            }
+          },
+          {
             dataIndex: 'sceneCount',
             title: '场景数量',
             search: false,
@@ -98,31 +117,37 @@ const CollectionList: React.FC = () => {
           {
             dataIndex: 'pvCount',
             title: '打开',
+            search: false,
             width: 44,
           },
           {
             dataIndex: 'click1Count',
             title: '进入',
+            search: false,
             width: 44,
           },
           {
             dataIndex: 'click2Count',
             title: '播放',
+            search: false,
             width: 44,
           },
           {
             dataIndex: 'click3Count',
             title: '拍照分享',
+            search: false,
             width: 88,
           },
           {
             dataIndex: 'click4Count',
             title: '录像分享',
+            search: false,
             width: 88,
           },
           {
             dataIndex: 'click5Count',
             title: '资源加载',
+            search: false,
             width: 88,
           },
           {

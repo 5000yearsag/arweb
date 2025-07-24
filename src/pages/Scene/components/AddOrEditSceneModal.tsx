@@ -381,10 +381,10 @@ const AddOrEditSceneModal: React.FC<
         fieldProps={{
           name: 'file',
           listType: 'picture-card',
-          accept: '.jpg,.jpeg,.png',
+          accept: '.jpg,.jpeg,.png,.map',
           customRequest: (params) => customUploadRequest('/api/sys/file/uploadSceneFile', params),
         }}
-        extra="支持文件格式：.jpg,.jpeg,.png"
+        extra="支持文件格式：.jpg,.jpeg,.png,.map"
         rules={[
           {
             validator(rule, value) {

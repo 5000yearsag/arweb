@@ -72,6 +72,7 @@ type CollectionFormValues = {
   wxAppIdList: string[];
   templateId: string;
   collectionType: number;
+  loadType: number;
 };
 const useCollectionDetail = () => {
   const [loading, setLoading] = useState<boolean>(true);
@@ -98,7 +99,8 @@ const useCollectionDetail = () => {
               return item.appId;
             }),
             templateId: res.templateId || "",
-            collectionType: res.collectionType
+            collectionType: res.collectionType,
+            loadType: res.loadType,
           };
           setDetail(_detail);
         } else {
@@ -168,6 +170,7 @@ const AddOrEditCollectionModal: React.FC<
         const description = values.description || '';
         const templateId = values.templateId || '';
         const collectionType = values.collectionType || 0;
+        const loadType = values.loadType || 0;
         const coverImgUrl = values.coverImg?.[0]?.response?.url || values.coverImg?.[0]?.url || '';
         const wxAppInfoList = (values.wxAppIdList || []).map((appId: string) => {
           const wxJumpParam = wxJumpParamsRef.current[appId];
@@ -184,7 +187,8 @@ const AddOrEditCollectionModal: React.FC<
             coverImgUrl,
             wxAppInfoList,
             templateId,
-            collectionType
+            collectionType,
+            loadType
           });
           message.success('编辑合集成功');
         } else {
@@ -194,7 +198,8 @@ const AddOrEditCollectionModal: React.FC<
             coverImgUrl,
             wxAppInfoList,
             templateId,
-            collectionType
+            collectionType,
+            loadType
           });
           message.success('新建合集成功');
         }
@@ -285,6 +290,27 @@ const AddOrEditCollectionModal: React.FC<
           {
             required: true,
             message: '请选择合集类型',
+          },
+        ]}
+      />
+      <ProFormSelect
+        name="loadType"
+        label="加载类型"
+        placeholder="请选择加载类型"
+        options={[
+        {
+          value: 0,
+          label: '普通加载',
+        },
+        {
+          value: 1,
+          label: '分段加载',
+        }]}
+        required
+        rules={[
+          {
+            required: true,
+            message: '请选择加载类型',
           },
         ]}
       />

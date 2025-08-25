@@ -98,7 +98,7 @@ const useCollectionDetail = () => {
               wxJumpParamsRef.current[appId] = item.wxJumpParam;
               return item.appId;
             }),
-            templateId: res.templateId || "",
+            templateId: "", // 暂时不加载模板ID
             collectionType: res.collectionType,
             loadType: res.loadType,
           };
@@ -161,14 +161,14 @@ const AddOrEditCollectionModal: React.FC<
       onOpenChange={(open) => {
         if (open) {
           loadAllAppList();
-          loadAllTemplateList()
+          // loadAllTemplateList() // 暂时注释模板加载
           loadCollectionDetail(collectionUuid);
         }
       }}
       onFinish={async (values) => {
         const collectionName = values.collectionName || '';
         const description = values.description || '';
-        const templateId = values.templateId || '';
+        const templateId = ''; // 暂时不使用模板ID
         const collectionType = values.collectionType || 0;
         const loadType = values.loadType || 0;
         const coverImgUrl = values.coverImg?.[0]?.response?.url || values.coverImg?.[0]?.url || '';
@@ -185,10 +185,8 @@ const AddOrEditCollectionModal: React.FC<
             collectionName,
             description,
             coverImgUrl,
-            wxAppInfoList,
-            templateId,
-            collectionType,
-            loadType
+            wxAppInfoList
+            // 暂时移除后端不支持的字段: templateId, collectionType, loadType
           });
           message.success('编辑合集成功');
         } else {
@@ -196,10 +194,8 @@ const AddOrEditCollectionModal: React.FC<
             collectionName,
             description,
             coverImgUrl,
-            wxAppInfoList,
-            templateId,
-            collectionType,
-            loadType
+            wxAppInfoList
+            // 暂时移除后端不支持的字段: templateId, collectionType, loadType
           });
           message.success('新建合集成功');
         }
@@ -272,7 +268,8 @@ const AddOrEditCollectionModal: React.FC<
           },
         ]}
       />
-      <ProFormSelect
+      {/* 暂时注释掉合集类型选择 - 后端暂不支持 */}
+      {/* <ProFormSelect
         name="collectionType"
         label="合集类型"
         placeholder="请选择合集类型"
@@ -292,8 +289,9 @@ const AddOrEditCollectionModal: React.FC<
             message: '请选择合集类型',
           },
         ]}
-      />
-      <ProFormSelect
+      /> */}
+      {/* 暂时注释掉加载类型选择 - 后端暂不支持 */}
+      {/* <ProFormSelect
         name="loadType"
         label="加载类型"
         placeholder="请选择加载类型"
@@ -313,8 +311,9 @@ const AddOrEditCollectionModal: React.FC<
             message: '请选择加载类型',
           },
         ]}
-      />
-      <ProFormSelect
+      /> */}
+      {/* 暂时隐藏合集模板选择 */}
+      {/* <ProFormSelect
         name="templateId"
         label="合集模板"
         placeholder="请选择关联合集模板"
@@ -326,7 +325,7 @@ const AddOrEditCollectionModal: React.FC<
             message: '请选择关联合集模板',
           },
         ]}
-      />
+      /> */}
       <ProFormTextArea
         name="description"
         label="合集描述"

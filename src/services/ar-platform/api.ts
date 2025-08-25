@@ -240,3 +240,7 @@ export async function deleteTemplate(id: string) {
 export async function getAllTemplateList(): Promise<AR_API.PagedListResult<AR_API.TemplateListItem>> {
   return request<AR_API.PagedListResult<AR_API.TemplateListItem>>('/api/template/list/all');
 }
+
+export async function getDashboardStats(): Promise<AR_API.DashboardStats> {
+  return request<AR_API.DashboardStats>('/api/collection/dashboardStats');
+}

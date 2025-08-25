@@ -50,6 +50,13 @@ declare namespace AR_API {
     description: string;
     collectionAppList: AppListItem[];
     templateId: string;
+    sceneCount: number;
+    pvCount: number;        // 打开
+    click1Count: number;    // 进入
+    click2Count: number;    // 播放
+    click3Count: number;    // 拍照分享
+    click4Count: number;    // 录像分享
+    click5Count: number;    // 资源加载
   };
 
   type AppListItem = {
@@ -71,6 +78,8 @@ declare namespace AR_API {
     arResourceUrl: string;
     arResourceType: 'video' | 'model';
     arResourceFileName?: string;
+    audioResourceUrl?: string;
+    audioResourceFileName?: string;
     arResourceDimension: string;
     spaceParam: string;
     status: 0 | 1; // 0 禁用 1 正常
@@ -114,7 +123,10 @@ declare namespace AR_API {
     arResourceDimension: string;
     spaceParam: string;
     arResourceFileName?: string;
+    audioResourceUrl?: string;
+    audioResourceFileName?: string;
     videoEffect?: string;
+    extraJson?: string;
   };
 
   type TemplateListItem = {
@@ -130,5 +142,12 @@ declare namespace AR_API {
     brandName: string;
     shareImgUrl: string;
     bgImgUrl: string;
+  };
+
+  type DashboardStats = {
+    totalCollections: number;
+    totalScenes: number;
+    totalAccess: number;
+    totalUsers: number;
   };
 }

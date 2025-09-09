@@ -1,12 +1,12 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { ActionType, ProTable } from '@ant-design/pro-components';
 import { history } from '@umijs/max';
-import { Button, Image } from 'antd';
+import { Button, Image, Modal, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import AddOrEditCollectionModal from './components/AddOrEditCollectionModal';
 import CollectionAppListModal from './components/CollectionAppListModal';
 
-import { getCollectionList } from '@/services/ar-platform/api';
+import { getCollectionList, deleteCollection } from '@/services/ar-platform/api';
 
 const CollectionList: React.FC = () => {
   const actionRef = useRef<ActionType>();
@@ -115,6 +115,15 @@ const CollectionList: React.FC = () => {
             title: '模板名称',
           },
           {
+            dataIndex: 'enableUserImage',
+            title: '用户上传图片',
+            search: false,
+            width: 120,
+            renderText(val) {
+              return val === 1 ? '已开启' : '未开启';
+            },
+          },
+          {
             dataIndex: 'pvCount',
             title: '打开',
             search: false,
@@ -182,7 +191,7 @@ const CollectionList: React.FC = () => {
                       </Button>
                     }
                   />
-                  {/* <Button
+                  <Button
                     type="link"
                     danger
                     onClick={() => {
@@ -198,7 +207,7 @@ const CollectionList: React.FC = () => {
                     }}
                   >
                     删除
-                  </Button> */}
+                  </Button>
                 </div>
               );
             },

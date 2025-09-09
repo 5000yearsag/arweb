@@ -6,6 +6,7 @@ import {
   ProFormTextArea,
   ProFormSelect,
   ProFormUploadButton,
+  ProFormSwitch,
 } from '@ant-design/pro-components';
 
 import type { ModalFormProps } from '@ant-design/pro-components';
@@ -73,6 +74,7 @@ type CollectionFormValues = {
   templateId: string;
   collectionType: number;
   loadType: number;
+  enableUserImage: boolean;
 };
 const useCollectionDetail = () => {
   const [loading, setLoading] = useState<boolean>(true);
@@ -101,6 +103,7 @@ const useCollectionDetail = () => {
             templateId: "", // 暂时不加载模板ID
             collectionType: res.collectionType,
             loadType: res.loadType,
+            enableUserImage: !!res.enableUserImage,
           };
           setDetail(_detail);
         } else {
@@ -171,6 +174,7 @@ const AddOrEditCollectionModal: React.FC<
         const templateId = ''; // 暂时不使用模板ID
         const collectionType = values.collectionType || 0;
         const loadType = values.loadType || 0;
+        const enableUserImage = values.enableUserImage ? 1 : 0;
         const coverImgUrl = values.coverImg?.[0]?.response?.url || values.coverImg?.[0]?.url || '';
         const wxAppInfoList = (values.wxAppIdList || []).map((appId: string) => {
           const wxJumpParam = wxJumpParamsRef.current[appId];
@@ -185,8 +189,10 @@ const AddOrEditCollectionModal: React.FC<
             collectionName,
             description,
             coverImgUrl,
-            wxAppInfoList
-            // 暂时移除后端不支持的字段: templateId, collectionType, loadType
+            wxAppInfoList,
+            enableUserImage,
+            collectionType,
+            loadType
           });
           message.success('编辑合集成功');
         } else {
@@ -194,8 +200,10 @@ const AddOrEditCollectionModal: React.FC<
             collectionName,
             description,
             coverImgUrl,
-            wxAppInfoList
-            // 暂时移除后端不支持的字段: templateId, collectionType, loadType
+            wxAppInfoList,
+            enableUserImage,
+            collectionType,
+            loadType
           });
           message.success('新建合集成功');
         }
@@ -268,6 +276,11 @@ const AddOrEditCollectionModal: React.FC<
           },
         ]}
       />
+      <ProFormSwitch
+        name="enableUserImage"
+        label="用户上传图片"
+        tooltip="开启后，用户扫描此合集的二维码时可以上传自定义图片"
+      />
       {/* 暂时注释掉合集类型选择 - 后端暂不支持 */}
       {/* <ProFormSelect
         name="collectionType"
@@ -290,8 +303,7 @@ const AddOrEditCollectionModal: React.FC<
           },
         ]}
       /> */}
-      {/* 暂时注释掉加载类型选择 - 后端暂不支持 */}
-      {/* <ProFormSelect
+      <ProFormSelect
         name="loadType"
         label="加载类型"
         placeholder="请选择加载类型"
@@ -311,7 +323,7 @@ const AddOrEditCollectionModal: React.FC<
             message: '请选择加载类型',
           },
         ]}
-      /> */}
+      />
       {/* 暂时隐藏合集模板选择 */}
       {/* <ProFormSelect
         name="templateId"

@@ -51,6 +51,7 @@ declare namespace AR_API {
     collectionAppList: AppListItem[];
     templateId: string;
     sceneCount: number;
+    enableUserImage?: number; // 0-否 1-是，是否启用用户上传图片功能
     pvCount: number;        // 打开
     click1Count: number;    // 进入
     click2Count: number;    // 播放
@@ -84,6 +85,7 @@ declare namespace AR_API {
     spaceParam: string;
     status: 0 | 1; // 0 禁用 1 正常
     videoEffect?: string;
+    extraJson?: string;
   };
 
   type AddCollectionBody = {
@@ -95,6 +97,7 @@ declare namespace AR_API {
       wxJumpParam: string;
     }[];
     templateId: string;
+    enableUserImage?: number; // 0-否 1-是，是否启用用户上传图片功能
   };
 
   type AddAppBody = {
@@ -149,5 +152,29 @@ declare namespace AR_API {
     totalScenes: number;
     totalAccess: number;
     totalUsers: number;
+  };
+
+  type UserUploadedImage = {
+    id: string;
+    collectionUuid: string;
+    sceneUuid: string;
+    userOpenid: string;
+    imageUrl: string;
+    originalImageUrl: string;
+    uploadTime: string;
+  };
+
+  type UploadUserImageResponse = {
+    imageUrl: string;
+    recordId: string;
+    uploadTime: number;
+  };
+
+  type UserImageSpaceParam = {
+    userImage?: {
+      position?: { x: number; y: number; z: number };
+      rotation?: { x: number; y: number; z: number };
+      scale?: { x: number; y: number; z: number };
+    };
   };
 }

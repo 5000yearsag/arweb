@@ -55,6 +55,7 @@ type SceneFormValues = {
   ];
   audioResourceFileName?: string;
   spaceParamObj?: SpaceParamObj;
+  userImageSpaceParamObj?: SpaceParamObj;
   tsbs?: boolean;
   
   extraJson: [
@@ -94,6 +95,11 @@ const defaultData = {
     rotation: { x: 0, y: 0, z: 0 },
     scale: { x: 1, y: 1, z: 1 },
   },
+  userImageSpaceParamObj: {
+    position: { x: 0, y: 0, z: 0 },
+    rotation: { x: 0, y: 0, z: 0 },
+    scale: { x: 1, y: 1, z: 1 },
+  },
   tsbs: false
 }
 
@@ -106,7 +112,17 @@ const useSceneDetail = () => {
         setLoading(true);
         const res = await getSceneByUuid(sceneUuid).finally(() => setLoading(false));
         if (res) {
-          const spaceParamObj: SpaceParamObj = parseSpaceParamStr(res.spaceParam);
+          const spaceParamData = parseSpaceParamStr(res.spaceParam);
+          const spaceParamObj: SpaceParamObj = {
+            position: spaceParamData.position || { x: 0, y: 0, z: 0 },
+            rotation: spaceParamData.rotation || { x: 0, y: 0, z: 0 },
+            scale: spaceParamData.scale || { x: 1, y: 1, z: 1 },
+          };
+          const userImageSpaceParamObj: SpaceParamObj = {
+            position: spaceParamData.userImage?.position || { x: 0, y: 0, z: -1 },
+            rotation: spaceParamData.userImage?.rotation || { x: 0, y: 0, z: 0 },
+            scale: spaceParamData.userImage?.scale || { x: 1, y: 1, z: 1 },
+          };
           const extraJsonOld = res.extraJson ? JSON.parse(res.extraJson) : void 0;
           const extraJsonNew = extraJsonOld ? extraJsonOld.map((item) => ({
             arResource: [
@@ -155,6 +171,7 @@ const useSceneDetail = () => {
                   },
                 ],
             spaceParamObj,
+            userImageSpaceParamObj,
             tsbs: res?.videoEffect === 'tsbs',
             extraJson: extraJsonNew ? extraJsonNew : void 0,
           });
@@ -322,7 +339,15 @@ const AddOrEditSceneModal: React.FC<
         const spaceParamObjInformValues = parseSpaceParamStr(
           values.spaceParamObj ? JSON.stringify(values.spaceParamObj) : void 0,
         );
-        const spaceParam = JSON.stringify(spaceParamObjInformValues);
+        // 合并用户图片空间参数
+        const userImageSpaceParam = parseSpaceParamStr(
+          values.userImageSpaceParamObj ? JSON.stringify(values.userImageSpaceParamObj) : void 0,
+        );
+        const combinedSpaceParam = {
+          ...spaceParamObjInformValues,
+          userImage: userImageSpaceParam
+        };
+        const spaceParam = JSON.stringify(combinedSpaceParam);
 
         const videoEffect = values.tsbs ? 'tsbs' : void 0;
 
@@ -473,6 +498,18 @@ const AddOrEditSceneModal: React.FC<
         label="空间参数"
         initialValue={{
           position: { x: 0, y: 0, z: 0 },
+          rotation: { x: 0, y: 0, z: 0 },
+          scale: { x: 1, y: 1, z: 1 },
+        }}
+      >
+        <SpaceParam />
+      </ProForm.Item>
+      <ProForm.Item
+        name="userImageSpaceParamObj"
+        label="用户图片空间参数"
+        tooltip="用户上传图片在AR场景中的位置、旋转和缩放参数"
+        initialValue={{
+          position: { x: 0, y: 0, z: -1 },
           rotation: { x: 0, y: 0, z: 0 },
           scale: { x: 1, y: 1, z: 1 },
         }}

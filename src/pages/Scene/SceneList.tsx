@@ -1,7 +1,7 @@
 import { DoubleLeftOutlined, PlusOutlined } from '@ant-design/icons';
 import { ActionType, ProTable } from '@ant-design/pro-components';
 import { useSearchParams } from '@umijs/max';
-import { Button, Image, Switch, SwitchProps } from 'antd';
+import { Button, Image, Switch, SwitchProps, Modal, message } from 'antd';
 import React, { useCallback, useRef, useState } from 'react';
 import AddOrEditSceneModal from './components/AddOrEditSceneModal';
 
@@ -9,7 +9,7 @@ import ModelPreviewImg from '@/assets/images/model_preview.jpg';
 import PlayerImg from '@/assets/images/player.png';
 import { BigPlayButton, Player } from 'video-react';
 
-import { getCollectionSecenList, triggerSwitchScene } from '@/services/ar-platform/api';
+import { getCollectionSecenList, triggerSwitchScene, deleteScene } from '@/services/ar-platform/api';
 
 const SceneSwitch = (
   props: SwitchProps & {
@@ -212,7 +212,7 @@ const SceneList: React.FC<{ collectionUuid: string }> = (props) => {
                       </Button>
                     }
                   />
-                  {/* <Button
+                  <Button
                     type="link"
                     danger
                     onClick={() => {
@@ -228,7 +228,7 @@ const SceneList: React.FC<{ collectionUuid: string }> = (props) => {
                     }}
                   >
                     删除
-                  </Button> */}
+                  </Button>
                 </div>
               );
             },

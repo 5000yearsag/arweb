@@ -12,17 +12,26 @@
 export default {
   // 如果需要自定义本地开发服务器  请取消注释按需调整
   dev: {
-    // localhost:8000/api/** -> https://preview.pro.ant.design/api/**
+    // localhost:8000/api/guest/** -> localhost:9091/guest/**
+    '/api/guest/': {
+      // 要代理的地址 - 本地后端服务
+      target: 'http://localhost:9091/',
+      // 配置了这个可以从 http 代理到 https
+      // 依赖 origin 的功能可能需要这个，比如 cookie
+      changeOrigin: true,
+      pathRewrite: { '^/api': '' },
+    },
+    // localhost:8000/api/** -> localhost:9091/api/**
     '/api/': {
-      // 要代理的地址
-      target: 'http://123.57.231.35:8081/',
+      // 要代理的地址 - 本地后端服务
+      target: 'http://localhost:9091/',
       // 配置了这个可以从 http 代理到 https
       // 依赖 origin 的功能可能需要这个，比如 cookie
       changeOrigin: true,
     },
     '/guest/': {
-      // 要代理的地址
-      target: 'http://123.57.231.35:8081/',
+      // 要代理的地址 - 本地后端服务
+      target: 'http://localhost:9091/',
       // 配置了这个可以从 http 代理到 https
       // 依赖 origin 的功能可能需要这个，比如 cookie
       changeOrigin: true,

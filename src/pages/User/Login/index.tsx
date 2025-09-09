@@ -18,7 +18,7 @@ import Settings from '../../../../config/defaultSettings';
 type LoginFormValues = {
   username: string;
   password: string;
-  sysCode: {
+  sysCode?: {
     captcha: string;
     randomStr: string;
   };
@@ -113,12 +113,18 @@ const Login: React.FC = () => {
     });
     try {
       // 登录
-      const data = await sysLogin({
+      const loginParams: any = {
         username: values.username,
         password: md5(values.password),
-        captcha: values.sysCode.captcha,
-        randomStr: values.sysCode.randomStr,
-      }).catch((e) => {
+      };
+      
+      // 需要验证码（仅在非开发环境）
+      if (process.env.NODE_ENV !== 'development' && values.sysCode) {
+        loginParams.captcha = values.sysCode.captcha;
+        loginParams.randomStr = values.sysCode.randomStr;
+      }
+      
+      const data = await sysLogin(loginParams).catch((e) => {
         const errorMessage = e.message;
         if (!!errorMessage) setUserLoginError(errorMessage);
         throw e;
@@ -237,29 +243,32 @@ const Login: React.FC = () => {
                   },
                 ]}
               />
-              <ProFormPictureCaptcha
-                name="sysCode"
-                fieldProps={{
-                  size: 'large',
-                  prefix: <PictureOutlined />,
-                }}
-                placeholder="图形验证码"
-                rules={[
-                  {
-                    required: true,
-                    message: '请输入图形验证码',
-                  },
-                  {
-                    validator(_, value) {
-                      if (value) {
-                        if (value.captcha && value.randomStr) return Promise.resolve();
-                        return Promise.reject('请输入图形验证码');
-                      }
-                      return Promise.resolve();
+              {/* 显示验证码 - 仅在非开发环境显示 */}
+              {process.env.NODE_ENV !== 'development' && (
+                <ProFormPictureCaptcha
+                  name="sysCode"
+                  fieldProps={{
+                    size: 'large',
+                    prefix: <PictureOutlined />,
+                  }}
+                  placeholder="图形验证码"
+                  rules={[
+                    {
+                      required: true,
+                      message: '请输入图形验证码',
                     },
-                  },
-                ]}
-              />
+                    {
+                      validator(_, value) {
+                        if (value) {
+                          if (value.captcha && value.randomStr) return Promise.resolve();
+                          return Promise.reject('请输入图形验证码');
+                        }
+                        return Promise.resolve();
+                      },
+                    },
+                  ]}
+                />
+              )}
             </>
           )}
         </LoginForm>

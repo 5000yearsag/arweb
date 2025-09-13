@@ -205,6 +205,7 @@ const SpaceParamField = (props: {
       <Space.Compact>
         <InputNumber
           precision={4}
+          step={0.1}
           addonBefore="X"
           value={x}
           onChange={(value) => {
@@ -213,6 +214,7 @@ const SpaceParamField = (props: {
         />
         <InputNumber
           precision={4}
+          step={0.1}
           addonBefore="Y"
           value={y}
           onChange={(value) => {
@@ -221,6 +223,7 @@ const SpaceParamField = (props: {
         />
         <InputNumber
           precision={4}
+          step={0.1}
           addonBefore="Z"
           value={z}
           onChange={(value) => {

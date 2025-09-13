@@ -348,7 +348,7 @@ const AddOrEditCollectionModal: React.FC<
             message: '请输入合集描述',
           },
           {
-            max: 20,
+            max: 140,
             message: '合集描述长度不超过140',
           },
         ]}
